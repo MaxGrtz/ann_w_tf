@@ -1,1 +1,1 @@
-# tfcourse_stock_prediction
+# Stock market index prediction using artificial neural network
