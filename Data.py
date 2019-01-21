@@ -40,7 +40,7 @@ class Data(object):
                 print('read all data from web')
             # preprocess unprocessed dataframe
             self.preprocess()
-        
+
         # save dataframe to csv
         directory = './datafiles/{}/'.format(self.stock)
         try:
@@ -55,9 +55,9 @@ class Data(object):
 
     def preprocess(self):
         '''preprocess dataframe: filtering and interpolation'''
-        economic_indicators = ['gdp', 'interest_rates', 'unemployment', 'inflation']
+        economic_indicators = ['gdp [USA]', 'interest_rates [USA]', 'unemployment [USA]', 'inflation [USA]']
         financial_indicators = ['ebit', 'total current assets', 'total current liabilities', 'net cash from total operating activities']
-        price_indicators = ['price', 's&p500']
+        price_indicators = ['price', 'volume', 's&p500']
         self.indicator_list = [item for sublist in [price_indicators, financial_indicators, economic_indicators] for item in sublist]
 
         self.data_frame = self.data_frame.interpolate(method='linear')
@@ -113,3 +113,5 @@ class Data(object):
 
         # construct and return dataframe
         self.data_frame = pd.concat([economics, finances, prices], axis=1, sort=False)
+
+   
