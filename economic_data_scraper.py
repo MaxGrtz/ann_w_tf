@@ -6,6 +6,13 @@ import quandl
 
  
 def get_economics_data(start_date):
+    '''
+    Get economics data of the USA from quandl API from start day up to today.
+    Also saves csv of the data.
+    params: start_date - from this date up to today, fetch the data 
+    returns: economics_data - pandas dataframe of USA [GDP, interest-rate, unemployment, inflation-rate]
+    '''
+
     quandl.ApiConfig.api_key = "cEnL78yMi4hkJTQ1cLy_"
 
     # get gdp

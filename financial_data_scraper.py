@@ -9,6 +9,13 @@ import datetime
 import os
 
 def get_financial_data(stock, start_date):
+    '''
+    Get financial data for given company from ih.advfn.com from start day up to today.
+    Saves csv of the data as well. 
+    params: stock - stock symbol of company
+            start_date - from this date up to today, fetch the data
+    returns: financial_data - pandas dataframe of the financial data of the chosen stock
+    '''
     # get number of quartals from start date
     today = datetime.date.today()
     start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')

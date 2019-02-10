@@ -10,6 +10,13 @@ import alpha_vantage
 import requests
 
 def get_price_data(stock, start_date):
+    '''
+    Get price data and trading volume for given company and S&P500 prices from www.alphavantage.co from start day up to today.
+    Saves csv of the data as well.
+    params: stock - stock symbol of company
+            start_date - from this date up to today, fetch the data
+    returns: price_data - pandas dataframe of the price data and trading volume
+    '''
 
     API_URL = "https://www.alphavantage.co/query"
 
@@ -22,7 +29,7 @@ def get_price_data(stock, start_date):
         "apikey": "E8X1JONC18APVAQW"
         }
 
-    # get data from alphavantage
+    # get company adjusted closing prices and volumne data from alphavantage
     response = requests.get(API_URL, stock_data)
     data = response.json()
     metaData = data.pop("Meta Data", None)
@@ -42,6 +49,7 @@ def get_price_data(stock, start_date):
         "apikey": "E8X1JONC18APVAQW"
         }
     
+    # get S&P500 adjusted closing prices data from alphavantage
     response = requests.get(API_URL, s_p_data)
     data = response.json()
     metaData = data.pop("Meta Data", None)
