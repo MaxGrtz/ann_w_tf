@@ -25,17 +25,18 @@ The networks usually meet their goal if they could tell us whether the prices fa
 - why we recurrent neural nets for time series prediction?
 - why lstm?
 
-## 3. Description of the experiment
+## 2. Description of the experiment
 
-### 3.1 Data Acquisition
+### 2.1 Data Acquisition
 
-### 3.2 Model Architecture
+### 2.2 Model Architecture
 
-### 3.3 Evaluation
+### 2.3 Evaluation
 
 
-## 4. Result
+## 3. Result
 
-### 4.1 Achievements
+### 3.1 Achievements
 
-### 4.2 Limitations
+### 3.2 Limitations
+- limitations like security data saving, company's financial status
