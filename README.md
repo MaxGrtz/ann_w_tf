@@ -26,14 +26,17 @@ The networks usually meet their goal if they could tell us whether the prices fa
 ### 1.2. Experiment Design
 
 **Input**
+
 For the experiment, we decided to use three out of four categories of input data: historical, financial, and environmental.
 There are possibilities for refining data for a better result, like using P/E (price-to-earnings ratio) and P/B factors in (price-to-book value ratio), but due to competitive reason companies are inclined not to disclose all their financial data. Therefore, we decided to keep working with the best we could have access free and online.
 
 **Model**
+
 For the neural network, we chose to work with an LSTM. In general, RNNs are designed to work with sequential data. That includes, one-to-many, many-to-one, and many-to-many relations between inputs and outputs. In our experiments, sequence of historical data are feed into the network in order to get one single piece of data, as prediction, back.
 LSTMs (Long Short-Term Memory) are a specialized and the most successful variation of RNNs, due to their ability to tackle the training problem of classic RNNS: the long-term dependencies. On the other hand, the price prediction task demands an essential capability for learning patterns over a long period of time. Therefore, we decided to use an LSTM for the experiment.
 
 **Output**
+
 From a ML point of view, there are minor differences between a network that can advise one to sell, hold, or buy a specific company's shares and a network that predicts the stock price for the same company for a specific date in future. Both should be able to learn market behavior; one within a classification and the other within a regression task.
 The main difference between these two kinds of network is that designing the first one needs some intuition understanding of economic dynamics. Accordingly, we decided to work with net prices and remove the analytic part of the task.
 
