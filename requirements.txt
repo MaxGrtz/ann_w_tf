@@ -1,6 +1,6 @@
 numpy==1.14.3
-pandas==0.22.0
 requests==2.18.4
-tensorflow==1.11.0
+pandas==0.22.0
 Quandl==3.4.4
+tensorflow==1.11.0
 alpha_vantage==2.1.0
