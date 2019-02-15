@@ -13,9 +13,9 @@ import quandl
 import requests
 
 # scrapers
-import economic_data_scraper
-import financial_data_scraper
-import price_data_scraper
+from lib import economic_data_scraper
+from lib import financial_data_scraper
+from lib import price_data_scraper
 
 
 
@@ -70,7 +70,7 @@ class Data(object):
         Filters economic data and the company data for prediction relevant financial and price indicators etc.
         Interpolation of the data to get data for every day.
         '''
-        economic_indicators = ['gdp [USA]', 'interest_rates [USA]', 'unemployment [USA]', 'inflation [USA]']
+        economic_indicators = ['gdp [USA]', 'unemployment [USA]'] 
         financial_indicators = ['ebit', 'total current assets', 'total current liabilities', 'net cash from total operating activities']
         price_indicators = ['price', 'volume', 's&p500']
         self.indicator_list = [item for sublist in [price_indicators, financial_indicators, economic_indicators] for item in sublist]
