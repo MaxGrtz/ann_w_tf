@@ -1,7 +1,5 @@
 __pycache__
 *.numbers
-*.txt
-*.pdf
 .ipynb_checkpoints/
 .vscode/
 summaries
