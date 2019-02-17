@@ -32,6 +32,8 @@ In the following paragraphs we go into the details of the different aspects of t
 
 ### 2.2 General Project Structure
 First a short overview of the general project file structure:
+
+```bash
 .
 ├── Final_Task_Info_Sheet.pdf
 ├── README.md
@@ -45,6 +47,7 @@ First a short overview of the general project file structure:
 │   ├── financial_data_scraper.py
 │   └── price_data_scraper.py
 └── requirements.txt
+```
 
 The project consists mainly of a Jupyter Notebook "./final_project.ipynb" that contains everything related to the structure, training and evaluation of the neural network for predicting stock price movement, with some helper functions found in the file "./lib/dataset_prep_functions.py". Another big part however was the acquisition of data itself - everything related to this part of the project is found in the "./lib" folder comprising the "./lib/Data.py" class file and three scripts for gathering data from the internet ("./lib/economic_data_scraper.py", "./lib/financial_data_scraper.py", "./lib/price_data_scraper.py"). All datafiles created while processing the data are saved in the "./datafiles" folder. 
 As an aside, we created a requirements.txt file containing all the necessary dependencies to run the code. To install everything activate your conda virtual environment and install pip - then execute "pip install -r requirements.txt" and all dependencies are checked and installed/updated if necessary. Furthermore please make sure that you are connected to the internet when running the code. 
@@ -53,21 +56,32 @@ As an aside, we created a requirements.txt file containing all the necessary dep
 ### 2.3 Data Acquisition
 The first thing to mention is that we restricted ourselves to S&P500 companies. The S&P500 is an American stock market index based on the market capitalization of 500 large companies (listed either on the NYSE or the NASDAQ stock exchanges), intended to represent the US economy or more specificly the state of the US stock market. Since we decided not to restrict ourselves to predictions based on price development alone, we had to decide on useful features to improve the predictive capacities of our network. 
 
-We categorized all data in this context into 4 different types: 
-    - economic data: information about the economic situation of the country the company has its legal seat in (in this case the USA)
-            -> we decided on the GDP (gross domestic product) and an unemployment index
-            -> another good economic indicator is the S&P500 index but since it is traded on exchanges we put this one under the rubric of price data
-    - financial data: information about the financial situation of the company we want to predict the stock price of
-            -> here we wanted to represent the three basic parts of a companies financial statement: income statement, balance sheet, cashflow statement
-            -> we decided to represent the financial statement by the EBIT (earnings before interest and taxes) 
-            -> the balace sheet is represented by the total current assets and liabilities
-            -> and for the cashflow statement we decided on the net cashflow from operating activities
-    - price data: we attributed pretty much everything related to the stocks directly to the category price data
-            -> the price data consists of the daily closing prices of the given stock, its trading volume of the day and the S&P500 index 
-    - sentiment data: this would be data summarizing the current perception of the given company
-            -> examples would be data from twitter sentiment analyses or google trends
-            -> acquiring this kind of data would go beyond the scope of this project
-            -> in principle however it could be added to the current data t
+We categorized all data in this context into 4 different types:
+
+1. economic data: information about the economic situation of the country the company has its legal seat in (in this case the USA)
+
+ - we decided on the GDP (gross domestic product) and an unemployment index
+ - another good economic indicator is the S&P500 index but since it is traded on exchanges we put this one under the rubric of price data
+
+
+2. financial data: information about the financial situation of the company we want to predict the stock price of
+
+ - here we wanted to represent the three basic parts of a companies financial statement: income statement, balance sheet, cashflow statement
+ - we decided to represent the financial statement by the EBIT (earnings before interest and taxes) 
+ - the balace sheet is represented by the total current assets and liabilities
+ - and for the cashflow statement we decided on the net cashflow from operating activities
+
+
+3. price data: we attributed pretty much everything related to the stocks directly to the category price data
+
+ - the price data consists of the daily closing prices of the given stock, its trading volume of the day and the S&P500 index 
+
+
+4. sentiment data: this would be data summarizing the current perception of the given company
+
+ - examples would be data from twitter sentiment analyses or google trends
+ - acquiring this kind of data would go beyond the scope of this project
+ - in principle however it could be added to the current data t
 
 In general we were restricted by the availability of most of the data. While price data is easily accessable in most cases, gathering and processing economic and financial data proved to be quiet challenging. The general problem with economic data was that all the data was only available for quarterly periods and we decided on a simple linear interpolation to extend the data points to daily values. We faced the same problem with the financial data and solved it similarly, but in addition we had difficulties to get access to historical financial data (more than last 2 years) of companies in general. Because there do not exist useful APIs for accessing historical financial data for larger time intervals (for free), we had to develop code to scrape the data from the html code of a website (https://ih.advfn.com/stock-market/NASDAQ) that contained the information for most S&P500 companies. Furthermore there are probably financial indicators that are better suited for predictions like the EPS (earnings per share), the P/E (the price/earnings ratio) or the P/B (price/book-value ratio), but it is even harder to get consistent information about those values and so we decided on more fundamental indicators that are easier accessable.
 
@@ -84,35 +98,49 @@ After gathering all the necessary information about a stock, the next step was t
 There are essentially three parts to this preparation: creating target labels, splitting of the data into subsequences, and normalization.
 
 1. Creating Target Labels
+
 As target labels for the predictions of our RNN we did choose the features of the following day. It was necessary to predict all features of the following day and not only the price because in the actual testing phase we wanted to propagate predictions into the future up to the prediction horizon we decided on, so the output of our network actually had to be a valid input to the network as well.
 
 2. Splitting of the Data into Subsequences
+
 As usual the Truncated Backpropagation through Time (TBTT) algorithm is used for training the RNN, which required to split the complete timeseries of the feature data and corresponding labels into subsequences of a defined length. To increase the number of available training examples we chose to create overlapping subsequences (shifted by one day). Furthermore we split the list of those subsequences into training and validation data, were about 10% of the subsequences closest to the current date are used as validation data. 
 Additionally we created non overlapping subsequences (of the same length) as inputs for the final predictions.
 
 3. Normalization
-For normalization it seemed to be optimal to normalize every subsequence individually. We used the following formula to normalize the i'th datapoint in a subsequence: $n_i = \frac{p_i}{p_0} - 1$ such that $p_0$ has the value 0 following $p_i$ are measured relative to the first datapoint of a sequence.
-The training and validation data could be normalized in advance, whereas the prediction data had to be normalized during the prediction process since the $p_0$ values of each subsequence had to be stored to invert the normalization for the RNN outputs with the formula: $p_i = (n_i + 1) * p_0$.
+
+For normalization it seemed to be optimal to normalize every subsequence individually. We used the following formula to normalize the i'th datapoint in a subsequence: n_i = (p_i/p_0) - 1 such that p_0 has the value 0 following $p_i$ are measured relative to the first datapoint of a sequence.
+The training and validation data could be normalized in advance, whereas the prediction data had to be normalized during the prediction process since the p_0 values of each subsequence had to be stored to invert the normalization for the RNN outputs with the formula: p_i = (n_i + 1) * p_0.
 
 
 ### 2.5 Model Architecture and Training
 As already mentioned the RNN was designed using the Tensorflow framework and we designed the network such that most essential parameters defining the network structure and the training process can be adjusted under the "Training and Model Configurations" section of the Jupyter Notebook. 
 Those parameters are: Validation Data Ratio, Subsequence Length, Prediction Horizon, LSTM Sizes, Batch Size, Learning Rate and Number of Epochs.
-        - Validation Data Ratio: defines as a decimal the percentage of data we want to use as validation data
-        - Subsequence Length: as already mentioned defined the length of data sequences (for the TBTT algorithm)
-        - Prediction Horizon: defines how many days we want to predict into the future in the final predictions
-        - LSTM Sizes: is a list of integers defining the number of nodes in each LSTM layer (hidden state and cell state therefore having the same number of nodes)
-        - Batch Size: number of subsequences used for a single training step ie. weight update (averaging over the loss of the individual sequences)
-        - Learning Rate: controlling the size of the update step in parameter space
-        - Number of Epochs: defines how many times the training data is passed through for training
+
+ - Validation Data Ratio: defines as a decimal the percentage of data we want to use as validation data
+
+ - Subsequence Length: as already mentioned defined the length of data sequences (for the TBTT algorithm)
+
+ - Prediction Horizon: defines how many days we want to predict into the future in the final predictions
+
+ - LSTM Sizes: is a list of integers defining the number of nodes in each LSTM layer 
+   (hidden state and cell state therefore having the same number of nodes)
+
+ - Batch Size: number of subsequences used for a single training step ie. weight update 
+   (averaging over the loss of the individual sequences)
+
+ - Learning Rate: controlling the size of the update step in parameter space
+
+ - Number of Epochs: defines how many times the training data is passed through for training
 
 1. Architecture - Graph definition
+
 First we defined placeholder for the input batch (one for feature input and one for target labels) and for the hidden and cell state of the LSTM layers. The RNN itself consists of tf.nn.rnn_cell.LSTMCell objects for each LSTM layer with the state sizes defined in the parameter LSTM Sizes. As activate function for each Cell we did chose tanh. Each LSTM Cell, representing a Layer of the RNN, is wrapped in a Dropout layer with a dropout of 5% (only for training phase as indicated by a training-flag boolean placeholder) for regularization purposes (to avoid overfitting to the training data). 
 The wrapped LSTM cells are than stacked using the tf.nn.rnn_cell.MultiRNNCell API, creating the complete RNN. Afterwards the computations are defined, where the tf.nn.dynamic_rnn is used to run the calculations for the input batch, given the current RNN state. The outputs are the corresponding predictions for every sequence of the input batch and the final state of the RNN. 
 The prediction output of the RNN is then mapped to the correct output dimensions by a final linear dense layer. 
 The loss is calculated as the mean squared error (MSE) between the output of the dense layer and the target values. To minimize the loss we decided on the ADAM Optimizer, with the defined Learning rate parameter as starting learning rate. 
 
 2. Training, Validation and Prediction
+
 The training consisted of the defined number of epochs. Each epoch the training data was shuffeled and split according to the defined batch size. The RNN state was set to all zeros at the beginning of every epoch as well. One Training step was performed for every batch and the state of final state of the RNN after every trainingstep was propagated to the next. 
 For the validation data we wanted to check every sequence individually (and not cut off any by splitting them into batches), so we duplicated the every single sequence (depending on the batch size) such that it had the correct dimensions for the batch placeholder of the RNN. The same manipulation was applied to the test data to accomodate for the fact that we wanted to get predictions for every sequence individually. 
 The loss for training and validation are written to the train and validation files in the summary folder and can be visualized using tensorboard.
