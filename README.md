@@ -46,12 +46,12 @@ In this section we will cover the main aspects of our final project: the data ac
 We will summarize the structure of the code and go into the details of the implementation and the thought process behind the decisions we made along the way.
 
 ### 2.1 Goal of the Project
-The goal of the project in general was to develop a deeper understanding of recurrent neural networks (RNNs) by applying them to the classical problem of stock price prediction. Stock prices are the prototypical example of sequential/timeseries data and RNNs, specifically RNNs with Long Short-Term Memory (LSTM) cells, are the state of the art in Deep Learning  when it comes to learning and predicting sequence patterns.
-We used the Tensorflow framework to build a RNN with LSTM cells and applied it to stock prices and other company related data to predict future price development.
+The goal of the project, in general, was to develop a deeper understanding of recurrent neural networks (RNNs) by applying them to the classical problem of stock price prediction. Stock prices are the prototypical example of sequential/time-series data and RNNs, specifically RNNs with Long Short-Term Memory (LSTM) cells, are the state of the art in Deep Learning  when it comes to learning and predicting sequencial patterns.
+We used the Tensorflow framework to build a RNN with LSTM cells and applied it to stock prices and other company's related data to predict future price development.
 In the following paragraphs we go into the details of the different aspects of the project. 
 
 ### 2.2 General Project Structure
-First a short overview of the general project file structure:
+First a short overview of the project files structure:
 
 ```bash
 .
@@ -69,7 +69,7 @@ First a short overview of the general project file structure:
 └── requirements.txt
 ```
 
-The project consists mainly of a Jupyter Notebook "./final_project.ipynb" that contains everything related to the structure, training and evaluation of the neural network for predicting stock price movement, with some helper functions found in the file "./lib/dataset_prep_functions.py". Another big part however was the acquisition of data itself - everything related to this part of the project is found in the "./lib" folder comprising the "./lib/Data.py" class file and three scripts for gathering data from the internet ("./lib/economic_data_scraper.py", "./lib/financial_data_scraper.py", "./lib/price_data_scraper.py"). All datafiles created while processing the data are saved in the "./datafiles" folder. 
+The project mainly consists of a Jupyter Notebook "./final_project.ipynb" that contains everything related to the structure, training and evaluation of the neural network for predicting stock price movement, with some helper functions found in the file "./lib/dataset_prep_functions.py". Another main part, however, was the acquisition of data itself - everything related to this part of the project is found in the "./lib" folder comprising the "./lib/Data.py" class file and three scripts for gathering data from the internet ("./lib/economic_data_scraper.py", "./lib/financial_data_scraper.py", "./lib/price_data_scraper.py"). All datafiles created while processing the data are saved in the "./datafiles" folder. 
 As an aside, we created a requirements.txt file containing all the necessary dependencies to run the code. To install everything activate your conda virtual environment and install pip - then execute "pip install -r requirements.txt" and all dependencies are checked and installed/updated if necessary. Furthermore please make sure that you are connected to the internet when running the code. 
 
 
