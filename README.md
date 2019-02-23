@@ -3,7 +3,6 @@
 ## 1. Introduction
 
 ### 1.1. Stock Prediction Using Neural Networks
-
 The most valuable piece of information in the stock market is an estimation of the share prices or their growth direction in the future. Efforts for predict the stock market behavior are as old as the market itself. These include a wide range of efforts from purely economic and technical analyses to the statistical data mining, to the ML-aided methods like decision trees.
 
 No need to mention that none of these efforts have ever been, practically, successful. In fact, there are reputable speculations, including 'Random Walk' hypothesis or 'Efficient Market' hypothesis that state the market behavior is essentially unpredictable. Even though, it is not a surprise that researchers are still working on the stock prices prediction problem.
@@ -26,17 +25,14 @@ The networks usually meet their goal if they could tell us whether the prices fa
 ### 1.2. Experiment Design
 
 **Input**
-
 For the experiment, we decided to use three out of four categories of input data: historical, financial, and environmental.
 There are possibilities for refining data for a better result, like using P/E (price-to-earnings ratio) and P/B factors in (price-to-book value ratio), but due to competitive reason companies are inclined not to disclose all their financial data. Therefore, we decided to keep working with the best we could have access free and online.
 
 **Model**
-
 For the neural network, we chose to work with an LSTM. In general, RNNs are designed to work with sequential data. That includes, one-to-many, many-to-one, and many-to-many relations between inputs and outputs. In our experiments, sequence of historical data are feed into the network in order to get one single piece of data, as prediction, back.
 LSTMs (Long Short-Term Memory) are a specialized and the most successful variation of RNNs, due to their ability to tackle the training problem of classic RNNS: the long-term dependencies. On the other hand, the price prediction task demands an essential capability for learning patterns over a long period of time. Therefore, we decided to use an LSTM for the experiment.
 
 **Output**
-
 From a ML point of view, there are minor differences between a network that can advise one to sell, hold, or buy a specific company's shares and a network that predicts the stock price for the same company for a specific date in future. Both should be able to learn market behavior; one within a classification and the other within a regression task.
 The main difference between these two kinds of network is that designing the first one needs some intuition understanding of economic dynamics. Accordingly, we decided to work with net prices and remove the analytic part of the task.
 
@@ -74,7 +70,7 @@ As an aside, we created a requirements.txt file containing all the necessary dep
 
 
 ### 2.3 Data Acquisition
-The first thing to mention is that we restricted ourselves to S&P500 companies. The S&P500 is an American stock market index based on the market capitalization of 500 large companies (listed either on the NYSE or the NASDAQ stock exchanges), intended to represent the US economy or more specificly the state of the US stock market. Since we decided not to restrict ourselves to predictions based on price development alone, we had to decide on useful features to improve the predictive capacities of our network. 
+The first thing to mention is that we restricted ourselves to S&P500 companies. The S&P500 is an American stock market index based on the market capitalization of 500 large companies (listed either on the NYSE or the NASDAQ stock exchanges), intended to represent the US economy or more specifically the state of the US stock market. Since we decided not to restrict ourselves to predictions based on price development alone, we had to decide on useful features to improve the predictive capacities of our network. 
 
 We categorized all data in this context into 4 different types:
 
@@ -88,7 +84,7 @@ We categorized all data in this context into 4 different types:
 
  - here we wanted to represent the three basic parts of a companies financial statement: income statement, balance sheet, cashflow statement
  - we decided to represent the financial statement by the EBIT (earnings before interest and taxes) 
- - the balace sheet is represented by the total current assets and liabilities
+ - the balance sheet is represented by the total current assets and liabilities
  - and for the cashflow statement we decided on the net cashflow from operating activities
 
 
@@ -101,14 +97,14 @@ We categorized all data in this context into 4 different types:
 
  - examples would be data from twitter sentiment analyses or google trends
  - acquiring this kind of data would go beyond the scope of this project
- - in principle however it could be added to the current data t
+ - in principle however it could be added to the current data
 
-In general we were restricted by the availability of most of the data. While price data is easily accessable in most cases, gathering and processing economic and financial data proved to be quiet challenging. The general problem with economic data was that all the data was only available for quarterly periods and we decided on a simple linear interpolation to extend the data points to daily values. We faced the same problem with the financial data and solved it similarly, but in addition we had difficulties to get access to historical financial data (more than last 2 years) of companies in general. Because there do not exist useful APIs for accessing historical financial data for larger time intervals (for free), we had to develop code to scrape the data from the html code of a website (https://ih.advfn.com/stock-market/NASDAQ) that contained the information for most S&P500 companies. Furthermore there are probably financial indicators that are better suited for predictions like the EPS (earnings per share), the P/E (the price/earnings ratio) or the P/B (price/book-value ratio), but it is even harder to get consistent information about those values and so we decided on more fundamental indicators that are easier accessable.
+In general we were restricted by the availability of most of the data. While price data is easily accessable in most cases, gathering and processing economic and financial data proved to be quiet challenging. The general problem with economic data was that all the data was only available for quarterly periods and we decided on a simple linear interpolation to extend the data points to daily values. We faced the same problem with the financial data and solved it similarly, but in addition we had difficulties to get access to historical financial data (more than last 2 years) of companies in general. Because there do not exist useful APIs for accessing historical financial data for larger time intervals (for free), we had to develop code to scrape the data from the html code of a website (https://ih.advfn.com/stock-market/NASDAQ) that contained the information for most S&P500 companies. Furthermore there are probably financial indicators that are better suited for predictions like the EPS (earnings per share), the P/E (the price/earnings ratio) or the P/B (price/book-value ratio), but it is even harder to get consistent information about those values and so we decided on more fundamental indicators that are easier accessible.
 
 The Data.py class file of the project contains our solution to handling the problems we faced and to get all the data we decided upon. 
 To summarize it briefly: it contains a Data class which instatiates a Data object for a given stock with a given start date. 
-In this instantiation all the requested data is gathered - either it is already available in the datafiles folder or gets downloaded from the internet via the previously mentioned scripts ("./lib/economic_data_scraper.py", "./lib/financial_data_scraper.py", "./lib/price_data_scraper.py").
-As an example, Data('AAPL', '2000-01-01') instantiates a Data object for the Apple stock, containing the data from January 1st 2000 upto today as a pandas dataframe. More implementation details are found in the documentation of the class.
+In this instantiation all the requested data is gathered - either it is already available in the data files folder or gets downloaded from the internet via the previously mentioned scripts ("./lib/economic_data_scraper.py", "./lib/financial_data_scraper.py", "./lib/price_data_scraper.py").
+As an example, Data('AAPL', '2000-01-01') instantiates a Data object for the Apple stock, containing the data from January 1st 2000 up to today as a pandas dataframe. More implementation details are found in the documentation of the class.
 
 Obviously we are restricted to the data available on the website and from the APIs used for price (alpha_vantage) and economic data (quandl), so some companies are not available and the range of data may also be limited in some cases. 
 
@@ -161,16 +157,16 @@ The loss is calculated as the mean squared error (MSE) between the output of the
 
 2. Training, Validation and Prediction
 
-The training consisted of the defined number of epochs. Each epoch the training data was shuffeled and split according to the defined batch size. The RNN state was set to all zeros at the beginning of every epoch as well. One Training step was performed for every batch and the state of final state of the RNN after every trainingstep was propagated to the next. 
-For the validation data we wanted to check every sequence individually (and not cut off any by splitting them into batches), so we duplicated the every single sequence (depending on the batch size) such that it had the correct dimensions for the batch placeholder of the RNN. The same manipulation was applied to the test data to accomodate for the fact that we wanted to get predictions for every sequence individually. 
+The training consisted of the defined number of epochs. Each epoch the training data was shuffeled and split according to the defined batch size. The RNN state was set to all zeros at the beginning of every epoch as well. One Training step was performed for every batch and the state of final state of the RNN after every training step was propagated to the next. 
+For the validation data we wanted to check every sequence individually (and not cut off any by splitting them into batches), so we duplicated the every single sequence (depending on the batch size) such that it had the correct dimensions for the batch placeholder of the RNN. The same manipulation was applied to the test data to accommodate for the fact that we wanted to get predictions for every sequence individually. 
 The loss for training and validation are written to the train and validation files in the summary folder and can be visualized using tensorboard.
 
-As mentioned eralier, the test data sequences were normalized by the same formula used for normalizing the training and validation data, but the first value of every sequence had to be saved to invert the normalization afterwards. 
+As mentioned earlier, the test data sequences were normalized by the same formula used for normalizing the training and validation data, but the first value of every sequence had to be saved to invert the normalization afterwards. 
 For every prediction the duplicated input sequence in fed into the RNN and the output is a prediction of the same sequence length, shifted one day into the future.
 This last value of the output sequence is the value the network predict for the day following the end of the input sequence. This value is appended to the input sequence, while the first value is cut off. This process is repeated based on the number of days we want to predict into the future. The predictions for the following n days (only the stock price value, not the predictions for all other features) are then saved in a list of predictions after inverting the normalization. The process in repeated for every subsequence in the test data.
 
 ### 2.6 Visualization and Evaluation
-For visualization purposes the predictions saved in the list of predictions are plotted against the true stock prices. This gives a good insight into how well the LSTM captures the patterns of the price sequence and how well is predicted the data it was never trained on (how well it generalizes). Additionally we calculated the Root Mean Squared Error (RMSE) between the final predictions and the true prices as a measure of the average prediction error. We did chose the RMSE because it is easily interpretable since is actually has the same units as the values compared, ie. dollars. We considered using the root of the sum squared error to get some absolute measure of how well our predictions are over the whole timespan, but this prooved to be problematic when comparing different network configutations. The reason is that the number of test sequences in the current implementation depends on the length of subsequences and therefore differs across configurations. Therefore a mean value like the RMSE seemed a better choice for the following evaluation. 
+For visualization purposes the predictions saved in the list of predictions are plotted against the true stock prices. This gives a good insight into how well the LSTM captures the patterns of the price sequence and how well is predicted the data it was never trained on (how well it generalizes). Additionally we calculated the Root Mean Squared Error (RMSE) between the final predictions and the true prices as a measure of the average prediction error. We did chose the RMSE because it is easily interpretable since is actually has the same units as the values compared, ie. dollars. We considered using the root of the sum squared error to get some absolute measure of how well our predictions are over the whole timespan, but this proved to be problematic when comparing different network configurations. The reason is that the number of test sequences in the current implementation depends on the length of subsequences and therefore differs across configurations. Therefore a mean value like the RMSE seemed a better choice for the following evaluation. 
 
 For the final evaluation of our model we decided to use the company American Airlines (AAL), because it exhibits strong price fluctuations without showcasing any obvious trends. 
 
