@@ -173,7 +173,7 @@ For the final evaluation of our model we decided to use the company American Air
 We tested varying configurations to find some good parameters combination.
 Generally we decided to fix the prediction horizon to about a month ie. 30 days. We created an overview over the RMSE results of different configurations which is attached to the jupyter notebook. It shows that we tested for two different Sequence lenghts: 50 and 100 days. For each sequence length we decided on a constant batchsize of 10 and tried different learning rates (1.00E-06, 1.00E-05, 5.00E-05, 1.00E-04), because increasing the batchsize is somewhat equivalent/has comparable effects to decreasing the learning rate. Three network architectures ([128,64], [128,128], [128,128,128]) were compared for different numbers of epochs (50, 100,150,200). 
 
-## 3. Result
+## 3. Results
 Based on the RMSE criteria, a longer sequence (100 days) works better than a shorter one (50 days), which is a reasonable outcome regarding the fact that our input data spans a long period of 20 years and the network is trying to learn and adapt to more stable patterns over time rather than occasional spikes.
 
 We also got slightly better result by using a two layer LSTM rather than a three-layered network. That does not say anything about the privilege of using a specific number of LSTM cells. But from a computational cost perspective it indicates that the architecture could probably reach to its pick performance with two cells.
@@ -191,4 +191,6 @@ EPOCHS = 1
 LEARNING_RATE = 1e-5
 ```
 
-Then we tested the network performance for ?? companies and an average over all the results shows that our network can predict the stock prices with a ?? percent error for a period of 30-day in the future. 
+Then we tested the network performance for `??` companies and an average over all the results shows that our network can predict the stock prices with a `??` percent error for a period of 30-day in the future.
+
+
