@@ -193,6 +193,27 @@ The evaluation showed, that longer sequence lengths, as expected, showed better 
 Further there does not seem to be any obvious advantage to choose more complex network structures, since the three layer network did not perform any better on the runs we did, than the simpler networks. It should however be mentioned that a single run for every configuration does not provide sufficient data for a comprehensive analysis.
 
 
-### 2.7 Further Ideas
+## 2.7 Results
+Based on the RMSE criteria, a longer sequence (100 days) works better than a shorter one (50 days), which is a reasonable outcome regarding the fact that our input data spans a long period of 20 years and the network is trying to learn and adapt to more stable patterns over time rather than occasional spikes.
+
+We also got slightly better result by using a two layer LSTM rather than a three-layered network. That does not say anything about the privilege of using a specific number of LSTM cells. But from a computational cost perspective it indicates that the architecture could probably reach to its pick performance with two cells.
+
+Therefore based on the comparison between different configurations the final hyperparameters and parameters were chosen as follows:
+
+```python
+# configs
+SUBSEQ_LEN = 100  # length of sequences fed into rnn
+HORIZON = 30  # number of days to predict into future
+VALID_RATIO = 0.1  # percent of validation data
+BATCH_SIZE = 10
+LSTM_SIZES = [128, 64]  # size of lstm states per layer
+EPOCHS = 1
+LEARNING_RATE = 1e-5
+```
+
+Then we tested the network performance for `??` companies and an average over all the results shows that our network can predict the stock prices with a `??` percent error for a period of 30-day in the future.
+
+
+### 3. Further Ideas
 There are two major aspect that we would have liked to explore more, but could not because it would have gone beyond the scope of this project. The first is a more sophisticated choice of input features, which was (as mentioned above) constrained by the availability of data, and an extension to sentiment indicators such as google trends or twitter analyses. This kind of data could provide evidence of interest in a company and the mainstream perception of it and thus prove to be a useful predictor of price development.
 A second idea that would have been interesting to explore, is to train a network on the data of multiple companies to extract more general patterns.
