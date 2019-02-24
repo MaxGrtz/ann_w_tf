@@ -11,15 +11,15 @@ With the hype of the artificial neural networks and their apparent success in ap
 
 Taking Perceptrons into account, it is almost three decades that artificial neural architectures are being employed as a tool for predicting stock prices. These studies could be categorized based on answers to three questions:
 
-1. **What are the inputs fed into the network?**
+**1. What are the inputs fed into the network?**
 There are numerous different combinations of factors that were tried as network inputs. Price histories are obviously the essential factor; many studies successfully used it as the only input. But the results generally show improvement with adding more factors that cover various dimensions of the companies financial status, like assets, liabilities, ..., the economic environment like GDP, inflation rate, ..., and as a recent trend, the sentiment and textual data mined from social media like Twitter or even Google Trends.
 The main challenge is to find a perfect set of inputs. First and the most basic consideration is, that the input set should capture enough relevant data necessary for reconstructing the output value. So the set should be comprehensive. However, some studies show that feeding too many weakly correlated input factors reduces the accuracy of prediction by confusing the network on irrelevant patterns. So the input set should also be well-restricted.
 The more general formulation of the problem is to find a balance between trust in our humanly-achieved knowledge of economy dynamics and the trust in the abilities of a neural network to discover patterns in data that seems uninformative to us.
 
-2. **What is the class/architecture of the network?**
+**2. What is the class/architecture of the network?**
 Different classes of neural network have been employed for market behavior prediction, including simple Multi-Layer Perceptrons (MLPs) to some unprecedented combinations of multilayer stacked LSTM. And within each class a network could vary due to its specific configuration architecture, through changing hyperparameters like the number of hidden layers or hidden nodes and/or due to the activation function(s) it uses.
 
-3. **What does the network predict?**
+**3. What does the network predict?**
 There are two main approaches to predictions with respect to the stock market. The first is to predict trading decisions, making it a classification task, deciding wheather to buy or sell a stock, which is eventually based on a prediction of rising of falling prices. The second is a regression approach, explicitly predicting stock price movement over some horizon into the future. 
 
 
@@ -73,13 +73,13 @@ The first thing to mention is that we restricted ourselves to S&P500 companies. 
 
 We categorized all data in this context into 4 different types:
 
-1. economic data: information about the economic situation of the country the company has its legal seat in (in this case the USA)
+**1. economic data:** information about the economic situation of the country the company has its legal seat in (in this case the USA)
 
  - we decided on the GDP (gross domestic product) and an unemployment index
  - another good economic indicator is the S&P500 index but since it is traded on exchanges we put this one under the rubric of price data
 
 
-2. financial data: information about the financial situation of the company we want to predict the stock price of
+**2. financial data:** information about the financial situation of the company we want to predict the stock price of
 
  - here we wanted to represent the three basic parts of a companies financial statement: income statement, balance sheet, cashflow statement
  - we decided to represent the financial statement by the EBIT (earnings before interest and taxes) 
@@ -87,12 +87,12 @@ We categorized all data in this context into 4 different types:
  - and for the cashflow statement we decided on the net cashflow from operating activities
 
 
-3. price data: we attributed pretty much everything related to the stocks directly to the category price data
+**3. price data:** we attributed pretty much everything related to the stocks directly to the category price data
 
  - the price data consists of the daily closing prices of the given stock, its trading volume of the day and the S&P500 index 
 
 
-4. sentiment data: this would be data summarizing the current perception of the given company
+**4. sentiment data:** this would be data summarizing the current perception of the given company
 
  - examples would be data from twitter sentiment analyses or google trends
  - acquiring this kind of data would go beyond the scope of this project
@@ -112,16 +112,16 @@ Obviously we are restricted to the data available on the website and from the AP
 After gathering all the necessary information about a stock, the next step was to prepair the data for the training process and predictions with the RNN. 
 There are essentially three parts to this preparation: creating target labels, splitting of the data into subsequences, and normalization.
 
-1. Creating Target Labels
+**1. Creating Target Labels**
 
 As target labels for the predictions of our RNN we did choose the features of the following day. It was necessary to predict all features of the following day and not only the price because in the actual testing phase we wanted to propagate predictions into the future up to the prediction horizon we decided on, so the output of our network actually had to be a valid input to the network as well.
 
-2. Splitting of the Data into Subsequences
+**2. Splitting of the Data into Subsequences**
 
 As usual the Truncated Backpropagation through Time (TBTT) algorithm is used for training the RNN, which required to split the complete timeseries of the feature data and corresponding labels into subsequences of a defined length. To increase the number of available training examples we chose to create overlapping subsequences (shifted by one day). Furthermore we split the list of those subsequences into training and validation data, were about 10% of the subsequences closest to the current date are used as validation data. 
 Additionally we created non overlapping subsequences (of the same length) as inputs for the final predictions.
 
-3. Normalization
+**3. Normalization**
 
 For normalization it seemed to be optimal to normalize every subsequence individually. We used the following formula to normalize the i'th datapoint in a subsequence: n_i = (p_i/p_0) - 1 such that p_0 has the value 0 and the following p_i are measured relative to the first datapoint of a sequence.
 The training and validation data could be normalized in advance, whereas the prediction data had to be normalized during the prediction process since the p_0 values of each subsequence had to be stored to invert the normalization for the RNN outputs with the formula: p_i = (n_i + 1) * p_0.
@@ -147,14 +147,14 @@ Those parameters are: Validation Data Ratio, Subsequence Length, Prediction Hori
 
  - Number of Epochs: defines how many times the training data is passed through for training
 
-1. Architecture - Graph definition
+**1. Architecture - Graph definition**
 
 First we defined placeholder for the input batch (one for feature input and one for target labels) and for the hidden and cell state of the LSTM layers. The RNN itself consists of tf.nn.rnn_cell.LSTMCell objects for each LSTM layer with the state sizes defined in the parameter LSTM Sizes. As activation function for each Cell we did chose tanh, since the output domain [-1,1] matches the normalized prediction, which are based on percentages. Each LSTM Cell, representing a Layer of the RNN, is wrapped in a Dropout layer with a dropout of 5% (only for training phase as indicated by a training-flag boolean placeholder) for regularization purposes (to avoid overfitting to the training data). 
 The wrapped LSTM cells are than stacked using the tf.nn.rnn_cell.MultiRNNCell API, creating the complete RNN. Afterwards the computations are defined, where the tf.nn.dynamic_rnn is used to run the calculations for the input batch, given the current RNN state. The outputs are the corresponding predictions for every sequence of the input batch and the final state of the RNN. 
 The prediction output of the RNN is then mapped to the correct output dimensions by a final linear dense layer. 
 The loss is calculated as the mean squared error (MSE) between the output of the dense layer and the target values. To minimize the loss we decided on the ADAM Optimizer, with the defined Learning rate parameter as starting learning rate. 
 
-2. Training, Validation and Prediction
+**2. Training, Validation and Prediction**
 
 The training consisted of the defined number of epochs. Each epoch the training data was shuffled and split according to the defined batch size. The RNN state was set to all zeros at the beginning of every epoch as well. One Training step was performed for every batch and the final state of the RNN after every training step was propagated to the next. 
 For the validation data we wanted to check every sequence individually (and not cut off any by splitting them into batches), so we duplicated the every single sequence (depending on the batch size) such that it had the correct dimensions for the batch placeholder of the RNN. The same manipulation was applied to the test data to accommodate for the fact that we wanted to get predictions for every sequence individually. 
