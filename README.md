@@ -170,8 +170,7 @@ For visualization purposes the predictions saved in the list of predictions are 
 
 For the final evaluation of our model we decided to use the company American Airlines (AAL), because it exhibits strong price fluctuations without showcasing any obvious trends. 
 
-We tested varying configurations to find some good parameter combination.
+We tested varying configurations to find some good parameters combination.
 Generally we decided to fix the prediction horizon to about a month ie. 30 days. We created an overview over the RMSE results of different configurations which is attached to the jupyter notebook. It shows that we tested for two different Sequence lenghts: 50 and 100 days. For each sequence length we decided on a constant batchsize of 10 and tried different learning rates (1.00E-06, 1.00E-05, 5.00E-05, 1.00E-04), because increasing the batchsize is somewhat equivalent/has comparable effects to decreasing the learning rate. Three network architectures ([128,64], [128,128], [128,128,128]) were compared for different numbers of epochs (50, 100,150,200). 
 
 ## 3. Result
-
