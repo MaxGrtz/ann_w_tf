@@ -123,7 +123,7 @@ Additionally we created non overlapping subsequences (of the same length) as inp
 
 3. Normalization
 
-For normalization it seemed to be optimal to normalize every subsequence individually. We used the following formula to normalize the i'th datapoint in a subsequence: n_i = (p_i/p_0) - 1 such that p_0 has the value 0 and the following $p_i$ are measured relative to the first datapoint of a sequence.
+For normalization it seemed to be optimal to normalize every subsequence individually. We used the following formula to normalize the i'th datapoint in a subsequence: n_i = (p_i/p_0) - 1 such that p_0 has the value 0 and the following p_i are measured relative to the first datapoint of a sequence.
 The training and validation data could be normalized in advance, whereas the prediction data had to be normalized during the prediction process since the p_0 values of each subsequence had to be stored to invert the normalization for the RNN outputs with the formula: p_i = (n_i + 1) * p_0.
 
 
@@ -172,33 +172,8 @@ For the final evaluation of our model we decided to use the company American Air
 We tested varying configurations to find some good parameters combination.
 Generally we decided to fix the prediction horizon to about a month ie. 30 days. We created an overview over the RMSE results of different configurations which is attached to the jupyter notebook. It shows that we tested for two different Sequence lenghts: 50 and 100 days. For each sequence length we decided on a constant batchsize of 10 and only tried different learning rates (1.00E-06, 1.00E-05, 5.00E-05, 1.00E-04), because increasing the batchsize is somewhat equivalent/has comparable effects to decreasing the learning rate. Three network architectures ([128,64], [128,128], [128,128,128]) were compared for different numbers of epochs (50, 100,150,200).  
 
-As an example for the learning behavior of our implementation here is one graph visualizing the training and validation loss for the following configuration: ....
+As an example for the learning behavior of our implementation here is one graph visualizing the training and validation loss for the following configuration: 
 
-[img of loss graph]
-
-For the same run, here is a visualization of the final predictions:
-
-[img of prediction graph]
-
-The final RMSE of this run was: ...
-
-
-Finally we compiled an overview of the results, comparing hyperparameter configurations by the RMSE of the final test predictions. 
-
-[img of results]
-
-
-
-The evaluation showed, that longer sequence lengths, as expected, showed better overall prediction performance. 
-Further there does not seem to be any obvious advantage to choose more complex network structures, since the three layer network did not perform any better on the runs we did, than the simpler networks. It should however be mentioned that a single run for every configuration does not provide sufficient data for a comprehensive analysis.
-
-
-## 2.7 Results
-Based on the RMSE criteria, a longer sequence (100 days) works better than a shorter one (50 days), which is a reasonable outcome regarding the fact that our input data spans a long period of 20 years and the network is trying to learn and adapt to more stable patterns over time rather than occasional spikes.
-
-We also got slightly better result by using a two layer LSTM rather than a three-layered network. That does not say anything about the privilege of using a specific number of LSTM cells. But from a computational cost perspective it indicates that the architecture could probably reach to its pick performance with two cells.
-
-Therefore based on the comparison between different configurations the final hyperparameters and parameters were chosen as follows:
 
 ```python
 # configs
@@ -207,11 +182,38 @@ HORIZON = 30  # number of days to predict into future
 VALID_RATIO = 0.1  # percent of validation data
 BATCH_SIZE = 10
 LSTM_SIZES = [128, 64]  # size of lstm states per layer
-EPOCHS = 1
+EPOCHS = 100
 LEARNING_RATE = 1e-5
 ```
 
-Then we tested the network performance for `??` companies and an average over all the results shows that our network can predict the stock prices with a `??` percent error for a period of 30-day in the future.
+<p align="center">
+  <img width="400" height="300" src="./datafiles/training_loss.png">
+</p>
+
+<p align="center">
+  <img width="400" height="300" src="./datafiles/validation_loss.png">
+</p>
+
+
+For the same run, here is a visualization of the final predictions:
+
+<p align="center">
+  <img width="900" height="500" src="./datafiles/predictions.png">
+</p>
+
+The final RMSE of this run was: 2.4937
+
+
+Finally we compiled an overview of the results, comparing hyperparameter configurations by the RMSE of the final test predictions. 
+
+<p align="center">
+  <img width="1200" height="800" src="./datafiles/results_overview.png">
+</p>
+
+
+
+The evaluation showed, that longer sequence lengths (100 days), as expected, showed better overall prediction performance. 
+Further there does not seem to be any obvious advantage to choose more complex network structures, since the three layer network did not perform any better on the runs we did, than the simpler networks. It should however be mentioned that a single run for every configuration does not provide sufficient data for a comprehensive analysis.
 
 
 ### 3. Further Ideas
